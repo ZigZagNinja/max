@@ -18,17 +18,12 @@ let countdownFrom;
 let shouldRemind = 0;
 var minsNumber;
 
-//nachsprechen
-let nachsprechen = 0;
+//aufschreiben
+let aufschreiben = 0;
 
-
-//answer variable
-let answer = '';
 
 function makeAnswer(){
 
-	//dont keep former answer
-	answer = '';
 
 	let lowFinalTranscripts = finalTranscripts.toLowerCase();
 
@@ -40,6 +35,15 @@ function makeAnswer(){
 		if(lowFinalTranscripts === "max" || lowFinalTranscripts === " max"){answer = 'Wie kann ich helfen?'; sayAnswer(answer);}
 
 
+		//console
+		else if(lowFinalTranscripts.includes("konsolen eingabe") || lowFinalTranscripts.includes("konsoleneingabe")){
+			let promt = prompt("eingabe?", "max");
+		    if (promt == null || promt == "") {
+		        sayAnswer("fehler");
+		    }else{
+		            lowFinalTranscripts = promt;
+		    }
+		}
 
 		//weather
 		else if(lowFinalTranscripts.includes("wetter")){
@@ -200,7 +204,7 @@ function makeAnswer(){
 
 
 		//reload
-		if(lowFinalTranscripts.includes("neu start") || lowFinalTranscripts.includes("neustart")){location.reload();}
+		if(lowFinalTranscripts.includes("neu start") || lowFinalTranscripts.includes("neustart")){sayAnswer("");location.reload();}
 
 
 		//wikipedia search
@@ -299,7 +303,7 @@ function makeAnswer(){
 		//frog gif
 		else if(lowFinalTranscripts.includes("frösche")){
 			sayAnswer("Ich hoffe du bist zufrieden.")
-			for(let i = 1; i<50; i++){
+			for(let i = 1; i<16; i++){
 				var docs = document.getElementById("f"+i);
 				docs.setAttribute("src", "images/frog.gif");
 			}	
@@ -310,8 +314,15 @@ function makeAnswer(){
 		else if(lowFinalTranscripts.includes("musik")){
 			let titel;
 
-			let allOptions = ["donner", "gemacht", "kontrolle", "nervig", "nummer", "schulden", "wir werden dich rocken", "rap god"]
-			if(lowFinalTranscripts.includes("optionen")){
+			let allOptions = ["donner", "gemacht", "kontrolle", "nervig", "nummer", "schulden", "wir werden dich rocken", "rap god", "kranker junge"];
+
+			if(lowFinalTranscripts.includes("zufällig") || lowFinalTranscripts.includes("zufall")){
+				titel = allOptions[Math.floor(Math.random()*allOptions.length)];
+				titel = titel.replace(/\s/g,"");
+				var audio = new Audio("sounds/musik/"+titel+".mp3");
+				audio.play();
+			}
+			else if(lowFinalTranscripts.includes("optionen")){
 				for(let i = 0; allOptions.length>i; i++){
 					sayAnswer(allOptions[i]);
 				}
@@ -385,12 +396,39 @@ function makeAnswer(){
 		}		
 
 
-		//nachsprechen
-		else if(lowFinalTranscripts.includes("sprich mir nach")){
-			nachsprechen = 1;
+		//vorlesen
+		else if(lowFinalTranscripts.includes("vorlesen")){promt("bitte text eingeben zum vorlesen", "hallo", lowFinalTranscripts);}
 
-			
+
+		//speech to text
+		else if(lowFinalTranscripts.includes("aufschreiben")){
+			sayAnswer("leg los");
+			aufschreiben = 1;
+			lowFinalTranscripts = "";
 		}
+		if(aufschreiben === 1){
+			document.getElementById("aufschreiben").innerHTML = "";
+			document.getElementById("aufschreiben").innerHTML + lowFinalTranscripts;
+		}
+
+
+		//time
+		if(lowFinalTranscripts.includes("wie spät ist es")){
+			var today = new Date();
+			var h = today.getHours();
+			var m = today.getMinutes();
+			    
+			let nextHour = Number(h)+1;
+			let minutesToNextHour = 60-Number(m)
+			if(m<=30){sayAnswer("Es ist "+m+" nach "+h+" uhr");}else{sayAnswer("Es ist "+minutesToNextHour+" vor "+nextHour+" uhr");}
+		}
+		//time end
+
+
+		//game
+		else if(lowFinalTranscripts.includes("spiel")){window.document.location.href = "https://zigzagninja.github.io/3d-game/";}
+
+
 
 	}//lowFinalTranscripts not empty end
 }//makeAnswer() end
