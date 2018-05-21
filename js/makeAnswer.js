@@ -303,7 +303,7 @@ function makeAnswer(){
 		//frog gif
 		else if(lowFinalTranscripts.includes("frösche")){
 			sayAnswer("Ich hoffe du bist zufrieden.")
-			for(let i = 1; i<16; i++){
+			for(let i = 1; i<50; i++){
 				var docs = document.getElementById("f"+i);
 				docs.setAttribute("src", "images/frog.gif");
 			}	
