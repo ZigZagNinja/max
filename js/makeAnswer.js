@@ -444,8 +444,6 @@ function makeAnswer(){
 		else if(lowFinalTranscripts.includes("spiel")){window.document.location.href = "https://zigzagninja.github.io/3d-game/";}
 
 
-		startConverting();
-
 	}//lowFinalTranscripts not empty end
 }//makeAnswer() end
 
