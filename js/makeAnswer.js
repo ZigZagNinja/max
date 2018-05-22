@@ -21,6 +21,9 @@ var minsNumber;
 //aufschreiben
 let aufschreiben = 0;
 
+//allowed to restart
+let allowedToRestart = 1;
+
 
 //konsolenbutton
 function konsolenEingabe(){finalTranscripts = "konsoleneingabe"; makeAnswer();}
@@ -88,6 +91,7 @@ function makeAnswer(){
 		else if(lowFinalTranscripts.includes("kreis berechn") || lowFinalTranscripts.includes("kreisberechnung")){
 			kreisbr = 1;
 			sayAnswer("Was hast du gegeben?");
+			allowedToRestart = 0;
 		}
 		else if(lowFinalTranscripts.includes("radius") && kreisbr === 1 && startVonBr === 0){sayAnswer("wie ist der wert?"); startVonBr = 1;}
 		else if(lowFinalTranscripts.includes(" durchmesser") && kreisbr === 1 && startVonBr === 0){sayAnswer("wie ist der wert?"); startVonBr = 2;}
@@ -114,6 +118,7 @@ function makeAnswer(){
 						//initialize for next use
 						kreisbr = 0;
 						startVonBr = 0;
+						allowedToRestart = 1;
 					}
 				break;
 				case 2:
@@ -133,6 +138,7 @@ function makeAnswer(){
 						//initialize for next use
 						kreisbr = 0;
 						startVonBr = 0;
+						allowedToRestart = 1;
 					}
 				break;
 				case 3:
@@ -152,6 +158,7 @@ function makeAnswer(){
 						//initialize for next use
 						kreisbr = 0;
 						startVonBr = 0;
+						allowedToRestart = 1;
 					}
 				break;
 				case 4:
@@ -171,6 +178,7 @@ function makeAnswer(){
 						//initialize for next use
 						kreisbr = 0;
 						startVonBr = 0;
+						allowedToRestart = 1;
 					}
 			}
 		}//kreisberechnung end
@@ -181,13 +189,14 @@ function makeAnswer(){
 
 
 		//wlan passwort
-		else if(lowFinalTranscripts.includes("internet passwort") || lowFinalTranscripts.includes("wlan passwort")){sayAnswerSlow("78948689112362167665");}
+		else if(lowFinalTranscripts.includes("internet passwort") || lowFinalTranscripts.includes("wlan passwort")){allowedToRestart = 0; sayAnswerSlow("78948689112362167665"); allowedToRestart = 1;}
 
 
 		//countdown start
 		else if(lowFinalTranscripts.includes("runterzähl")){
 			sayAnswer("wie lange?");
 			shouldCountdown = 1;
+			allowedToRestart = 0;
 		}
 		if(shouldCountdown === 1){
 			if(lowFinalTranscripts.includes("sekunden")){
@@ -203,6 +212,7 @@ function makeAnswer(){
 				},1000);
 				
 				shouldCountdown = 0;
+				allowedToRestart = 1;
 			}
 		}//countdown end
 
@@ -261,11 +271,12 @@ function makeAnswer(){
 
 			sayAnswer("an was soll ich dich erinnern?")
 			shouldRemind = 1;
+			allowedToRestart = 0;
 		}
 		if(shouldRemind === 1){
 			if(!lowFinalTranscripts.includes("erinnere mich in")){
 				let shouldRemindOf = lowFinalTranscripts;
-				setTimeout(function(){sayAnswer("Ich sollte dich an das hier erinnern,"+shouldRemindOf);},minsNumber);
+				setTimeout(function(){sayAnswer("Ich sollte dich an das hier erinnern,"+shouldRemindOf); allowedToRestart = 1;},minsNumber);
 				shouldRemind = 0;
 			}
 		}//reminder end
@@ -317,6 +328,7 @@ function makeAnswer(){
 		//music 
 		else if(lowFinalTranscripts.includes("musik")){
 			let titel;
+			allowedToRestart = 0;
 
 			let allOptions = ["donner", "gemacht", "kontrolle", "nervig", "nummer", "schulden", "wir werden dich rocken", "rap god", "kranker junge"];
 
@@ -351,6 +363,7 @@ function makeAnswer(){
 
 		//synonyms
 		else if(lowFinalTranscripts.includes("synonyme für")){
+			allowedToRestart = 0;
 			let word = lowFinalTranscripts.replace("synonyme für", "")
 			if(word.includes("was sind")){
 				word = word.replace("was sind", "");
@@ -373,7 +386,7 @@ function makeAnswer(){
 							sayAnswer(response.synsets[1].terms[secondLoop].term)
 							secondLoop++;
 						}
-						if(secondLoop >= response.synsets[1].terms.length){secondLoop = 0; firstLoop = 0;}
+						if(secondLoop >= response.synsets[1].terms.length){secondLoop = 0; firstLoop = 0; allowedToRestart = 1;}
 					}
 					
 
@@ -384,7 +397,7 @@ function makeAnswer(){
 		}
 
 
-		//joke
+		//joke (work in progress)
 		else if(lowFinalTranscripts.includes("witz")){
 			let xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function(){
@@ -401,18 +414,18 @@ function makeAnswer(){
 
 
 		//vorlesen
-		else if(lowFinalTranscripts.includes("vorlesen")){promt("bitte text eingeben zum vorlesen", "hallo", lowFinalTranscripts);}
+		else if(lowFinalTranscripts.includes("vorlesen")){allowedToRestart = 0; promt("bitte text eingeben zum vorlesen", "hallo", lowFinalTranscripts); allowedToRestart = 1;}
 
 
 		//speech to text
 		else if(lowFinalTranscripts.includes("aufschreiben")){
 			sayAnswer("leg los");
 			aufschreiben = 1;
+			allowedToRestart = 0;
 			lowFinalTranscripts = "";
 		}
 		if(aufschreiben === 1){
-			document.getElementById("aufschreiben").innerHTML = "";
-			document.getElementById("aufschreiben").innerHTML + lowFinalTranscripts;
+			document.getElementById("aufschreiben").innerHTML = document.getElementById("aufschreiben").innerHTML + lowFinalTranscripts;
 		}
 
 
@@ -422,9 +435,7 @@ function makeAnswer(){
 			var h = today.getHours();
 			var m = today.getMinutes();
 			    
-			let nextHour = Number(h)+1;
-			let minutesToNextHour = 60-Number(m)
-			if(m<=30){sayAnswer("Es ist "+m+" nach "+h+" uhr");}else{sayAnswer("Es ist "+minutesToNextHour+" vor "+nextHour+" uhr");}
+			sayAnswer("es ist "+h+" uhr "+m);
 		}
 		//time end
 
@@ -433,6 +444,13 @@ function makeAnswer(){
 		else if(lowFinalTranscripts.includes("spiel")){window.document.location.href = "https://zigzagninja.github.io/3d-game/";}
 
 
+		startConverting();
 
 	}//lowFinalTranscripts not empty end
 }//makeAnswer() end
+
+
+
+setInterval(function(){
+	if(allowedToRestart === 1){location.reload();}
+},30000);
