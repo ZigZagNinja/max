@@ -22,6 +22,10 @@ var minsNumber;
 let aufschreiben = 0;
 
 
+//konsolenbutton
+function konsolenEingabe(){finalTranscripts = "konsoleneingabe"; makeAnswer();}
+
+
 function makeAnswer(){
 
 
