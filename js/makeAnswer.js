@@ -449,6 +449,6 @@ function makeAnswer(){
 
 
 
-setInterval(function(){
+/*setInterval(function(){
 	if(allowedToRestart === 1){location.reload();}
-},30000);
+},30000);*/
